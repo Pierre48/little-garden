@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace LittleGarden.Core
+namespace Pump.Core
 {
     public interface IPump
     {

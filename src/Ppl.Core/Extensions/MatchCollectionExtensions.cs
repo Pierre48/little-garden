@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace LittleGarden.Core.Extensions
+namespace Ppl.Core.Extensions
 {
     public static class MatchCollectionExtensions
     {
@@ -24,9 +24,9 @@ namespace LittleGarden.Core.Extensions
         
         public static async void ForEachAsync(this MatchCollection collection, Func<Match, Task> action)
         {
-            foreach (Match m in collection)
+            for (int i=0;i < collection.Count;i++)
             {
-                await action(m);
+                await action(collection[i]);
             }
         }        
         

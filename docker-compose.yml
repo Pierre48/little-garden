@@ -1,5 +1,20 @@
 version: '3.1'
 services:
+  farm-suppliers:
+    build:
+      context: .
+      dockerfile: src/Pump/LittleGarden.Pump/Dockerfile
+      args:
+        buildno: 1
+    # environment:
+    #   - DB_SERVER=database
+    #   - ASPNETCORE_URLS=http://+:8001
+    depends_on: 
+      - mongo
+    ports:
+      - "9999:9999"
+    networks: 
+      pump-network:
   mongo:
     image: mongo
     ports:
@@ -22,7 +37,289 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example  
     networks: 
       pump-network: 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch1
+    environment:
+      - node.name=elasticsearch1
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 1G
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
+    volumes:
+      - logs:/var/log
+      - esdata1:/usr/share/elasticsearch/data
+    networks:
+      - pump-network
+    ports:
+      - 9200:9200
+      - 9300:9300
+  elasticsearch2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch2
+    environment:
+      - node.name=elasticsearch2
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
+    volumes:
+      - logs:/var/log
+      - esdata2:/usr/share/elasticsearch/data
+    networks:
+      - pump-network
+    ports:
+      - 9201:9200
+  elasticsearch3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: elasticsearch3
+    environment:
+      - node.name=elasticsearch3
+      - cluster.name=docker-cluster
+      - cluster.initial_master_nodes=elasticsearch1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256M -Xmx256M"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch1"
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - network.host=_eth0_
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    # privileged: true
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 10s
+    volumes:
+      - logs:/var/log
+      - esdata3:/usr/share/elasticsearch/data
+    networks:
+      - pump-network
+    ports:
+      - 9202:9200
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_URL: http://elasticsearch1:9200/
+    ports:
+      - 5601:5601
+    volumes:
+      - logs:/var/log
+    ulimits:
+      nproc: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    cap_add:
+      - ALL
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+        reservations:
+          cpus: '1'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
+        window: 120s
+    networks:
+      - pump-network
+  # auditbeat:
+  #   image: docker.elastic.co/beats/auditbeat:7.6.2
+  #   command: auditbeat -e -strict.perms=false
+  #   user: root
+  #   environment:
+  #     - setup.kibana.host=kibana:5601
+  #     - output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
+  #   pid: "host"
+  #   volumes:
+  #   #   - ${PWD}/configs/auditbeat.docker.yml:/usr/share/auditbeat/auditbeat.yml
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - pump-network
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:7.6.2
+    # command: --strict.perms=false
+    environment:
+      - setup.kibana.host=kibana:5601
+      - output.elasticsearch.hosts=["elasticsearch:9200"]
+    cap_add:
+      - AUDIT_CONTROL
+      - AUDIT_READ
+    volumes:
+      - .\configs\metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      #- /proc:/hostfs/proc:ro
+      #- /:/hostfs:ro
+    networks:
+      - pump-network
+
+  # heartbeat:
+  #   image: docker.elastic.co/beats/heartbeat:7.6.2
+  #   command: --strict.perms=false
+  #   environment:
+  #     - setup.kibana.host=kibana:5601
+  #     - output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   # volumes:
+  #   #   - ${PWD}/configs/heartbeat.docker.yml:/usr/share/heartbeat/heartbeat.yml
+  #   networks:
+  #     - pump-network
+
+  # packetbeat:
+  #   image: docker.elastic.co/beats/packetbeat:7.6.2
+  #   command: --strict.perms=false
+  #   environment:
+  #     - setup.kibana.host=kibana:5601
+  #     - output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   cap_add:
+  #     - NET_RAW
+  #     - NET_ADMIN
+  #   # volumes:
+  #   #   - ${PWD}/configs/packetbeat.docker.yml:/usr/share/packetbeat/packetbeat.yml
+  #   networks:
+  #     - pump-network
+
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:7.6.2
+  #   command: --strict.perms=false
+  #   environment:
+  #     - setup.kibana.host=kibana:5601
+  #     - output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   ports:
+  #     - 9000:9000
+  #   volumes:
+  #     # - ${PWD}/configs/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - pump-network
+  # apmserver:
+  #   image: docker.elastic.co/apm/apm-server:7.6.2
+  #   command: --strict.perms=false
+  #   ports:
+  #     - 8200:8200
+  #     - 8201:8200
+  #   environment:
+  #     - apm-server.host=0.0.0.0
+  #     - setup.kibana.host=kibana:5601
+  #     - output.elasticsearch.hosts=["elasticsearch:9200"]
+  #   # volumes:
+  #   #   - ${PWD}/configs/apm-server.yml:/usr/share/apm-server/apm-server.yml
+  #   networks:
+  #       - pump-network
+  nginx:
+    image: nginx:latest
+    ports:
+        - 8080:80
+    volumes:
+        - .\nginx-config\:/etc/nginx/conf.d/
+    command: /bin/bash -c "nginx -g 'daemon off;'"
+    ulimits:
+      nproc: 65535
+    networks:
+      - pump-network
+  # app-search:
+  #   image: docker.elastic.co/app-search/app-search
+  #   ports:
+  #     - 3002:3002
+  #   environment:
+  #     secret_session_key: supersecretsessionkey
+  #     elasticsearch.host: http://elasticsearch1:9200/
+  #     allow_es_settings_modification: "true"
+  #   networks:
+  #       - pump-network
 volumes:
+  esdata1:
+  esdata2:
+  esdata3:
   mongodata: 
+  logs:
+
 networks:
   pump-network:   

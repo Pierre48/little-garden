@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LittleGarden.Core.Extensions
+namespace Ppl.Core.Extensions
 {
     public static class IEnumerableExtensions
     {
