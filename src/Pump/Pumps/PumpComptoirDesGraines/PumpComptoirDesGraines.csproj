@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\LittleGarden.core\LittleGarden.Core.csproj" />
     <ProjectReference Include="..\..\..\LittleGarden.Data\LittleGarden.Data.csproj" />
-    <ProjectReference Include="..\..\pump.Core\Pump.Core.csproj" />
+    <ProjectReference Include="..\..\Pump.Core\Pump.Core.csproj" />
   </ItemGroup>
 
 </Project>
