@@ -21,10 +21,27 @@ namespace LittleGarden.Pump
 
         public  static void Main(string[] args)
         {
+            try
+            {
+                var bootstrap = new Boostrap();
+                bootstrap.Start();
+                Console.ReadLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Message}\r\n{e.StackTrace}");
+                LogInnerException(e);
+            }
+        }
 
-            var bootstrap = new Boostrap();
-            bootstrap.Start().GetAwaiter();
-            Console.ReadLine();
+        private static void LogInnerException(Exception e)
+        {
+            if (e.InnerException == null)
+            {
+                var ex = e.InnerException;
+                Console.WriteLine($"\r\n{ex.Message}\r\n{ex.StackTrace}");
+                LogInnerException(ex);
+            }
         }
     }
 }

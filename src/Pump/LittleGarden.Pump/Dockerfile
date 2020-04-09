@@ -4,6 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 COPY ["src/Pump/LittleGarden.Pump/LittleGarden.Pump.csproj", "src/Pump/LittleGarden.Pump/"]
+COPY ["src/Pump/Pumps/PumpComptoirDesGraines/PumpComptoirDesGraines.csproj", "src/Pump/Pumps/PumpComptoirDesGraines/"]
 COPY ["src/Pump/Pump.Core/Pump.Core.csproj", "src/Pump/Pump.Core/"]
 COPY ["src/LittleGarden.core/LittleGarden.Core.csproj", "src/LittleGarden.core/"]
 COPY ["src/LittleGarden.Data/LittleGarden.Data.csproj", "src/LittleGarden.Data/"]

@@ -15,12 +15,12 @@ namespace Pump.Core.Metrics
             GetCounter(name).Set(value);
         }
 
-        public async Task Open() 
+        public void Open() 
         {
             var server = new Prometheus.MetricServer(hostname:"127.0.0.1", port: 9999);//TODO To Configure
             server.Start();
 
-            await Task.Run(() =>
+            Task.Run(() =>
             {
                 counters.Values.ForEach(x => x.Inc());
                 Thread.Sleep(TimeSpan.FromSeconds(10));//TODO To Configure

@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\LittleGarden.Data\LittleGarden.Data.csproj" />
     <ProjectReference Include="..\..\Ppl.Core\Ppl.Core.csproj" />
     <ProjectReference Include="..\Pump.Core\Pump.Core.csproj" />
+    <ProjectReference Include="..\Pumps\PumpComptoirDesGraines\PumpComptoirDesGraines.csproj" />
   </ItemGroup>
 
 </Project>

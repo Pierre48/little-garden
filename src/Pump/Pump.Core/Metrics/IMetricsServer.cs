@@ -7,7 +7,7 @@ namespace Pump.Core.Metrics
 {
     public interface IMetricsServer
     {
-        Task Open();
+        void Open();
         void Set(string name, double value);
         void Inc(string name, long modifiedCount);
     }

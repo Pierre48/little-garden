@@ -57,23 +57,23 @@ services:
     cap_add:
       - ALL
     # privileged: true
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          cpus: '1'
-          memory: 1G
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 10s
+    # deploy:
+    #   replicas: 1
+    #   update_config:
+    #     parallelism: 1
+    #     delay: 10s
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 1G
+    #   restart_policy:
+    #     condition: on-failure
+    #     delay: 5s
+    #     max_attempts: 3
+    #     window: 10s
     volumes:
       - logs:/var/log
       - esdata1:/usr/share/elasticsearch/data
@@ -103,23 +103,23 @@ services:
     cap_add:
       - ALL
     # privileged: true
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          cpus: '1'
-          memory: 256M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 10s
+    # deploy:
+    #   replicas: 1
+    #   update_config:
+    #     parallelism: 1
+    #     delay: 10s
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 256M
+    #   restart_policy:
+    #     condition: on-failure
+    #     delay: 5s
+    #     max_attempts: 3
+    #     window: 10s
     volumes:
       - logs:/var/log
       - esdata2:/usr/share/elasticsearch/data
@@ -148,23 +148,23 @@ services:
     cap_add:
       - ALL
     # privileged: true
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          cpus: '1'
-          memory: 256M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 10s
+    # deploy:
+    #   replicas: 1
+    #   update_config:
+    #     parallelism: 1
+    #     delay: 10s
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 256M
+    #   restart_policy:
+    #     condition: on-failure
+    #     delay: 5s
+    #     max_attempts: 3
+    #     window: 10s
     volumes:
       - logs:/var/log
       - esdata3:/usr/share/elasticsearch/data
@@ -189,23 +189,23 @@ services:
         hard: -1
     cap_add:
       - ALL
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
-        reservations:
-          cpus: '1'
-          memory: 256M
-      restart_policy:
-        condition: on-failure
-        delay: 30s
-        max_attempts: 3
-        window: 120s
+    # deploy:
+    #   replicas: 1
+    #   update_config:
+    #     parallelism: 1
+    #     delay: 10s
+    #   resources:
+    #     limits:
+    #       cpus: '1'
+    #       memory: 256M
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 256M
+    #   restart_policy:
+    #     condition: on-failure
+    #     delay: 30s
+    #     max_attempts: 3
+    #     window: 120s
     networks:
       - pump-network
   # auditbeat:

@@ -20,7 +20,7 @@ namespace LittleGarden.Pump
     class Boostrap
     {
 
-        public async Task Start()
+        public void Start()
         {
             //setup our DI
             var serviceProvider = new ServiceCollection()
@@ -38,7 +38,7 @@ namespace LittleGarden.Pump
 
             //do the actual work here
             var metricsServer = serviceProvider.GetService<IMetricsServer>();
-            await metricsServer.Open();
+             metricsServer.Open();
             var bus = serviceProvider.GetService<IBus>();
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
             bus.Subscribe<EntityUpdated<Seedling>>(async e => await seedlingContext.Save(e.Entity));
@@ -66,10 +66,11 @@ namespace LittleGarden.Pump
     {
         public static IServiceCollection AddPumps(this IServiceCollection serviceCollection)
         {
+            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+            var directory = System.IO.Path.GetDirectoryName(location);
             var result = new List<IPump>();
-            var assemblies = new string[] {
-                @"C:\git\little-garden\src\Pump\Pumps\PumpComptoirDesGraines\bin\Debug\netstandard2.0\PumpComptoirDesGraines.dll"
-            };
+            var assemblies = Directory.GetFiles(directory, "Pump*.dll");
+
             foreach (var assembly in assemblies)
             {
                 Assembly.LoadFile(assembly)
