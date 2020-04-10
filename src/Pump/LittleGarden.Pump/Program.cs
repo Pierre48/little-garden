@@ -23,6 +23,7 @@ namespace LittleGarden.Pump
         {
             try
             {
+                Console.WriteLine($"File exist : {File.Exists("librocksdb.so")}");
                 var bootstrap = new Boostrap();
                 bootstrap.Start();
                 Console.ReadLine();
@@ -36,7 +37,7 @@ namespace LittleGarden.Pump
 
         private static void LogInnerException(Exception e)
         {
-            if (e.InnerException == null)
+            if (e.InnerException != null)
             {
                 var ex = e.InnerException;
                 Console.WriteLine($"\r\n{ex.Message}\r\n{ex.StackTrace}");
