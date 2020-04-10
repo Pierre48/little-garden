@@ -20,7 +20,6 @@ RUN dotnet publish "LittleGarden.Pump.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY  --from=publish /app/publish/runtimes/linux-x64/native/librocksdb.so .
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libgdiplus libc6-dev \
     && apt-get install libsnappy1v5 \
