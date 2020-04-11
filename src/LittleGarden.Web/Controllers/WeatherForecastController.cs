@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace LittleGarden.API.Controllers
+namespace LittleGarden.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

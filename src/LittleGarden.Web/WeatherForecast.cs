@@ -1,6 +1,6 @@
 using System;
 
-namespace LittleGarden.API
+namespace LittleGarden.Web
 {
     public class WeatherForecast
     {

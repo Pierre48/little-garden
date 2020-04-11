@@ -53,7 +53,14 @@ namespace Pump.Core
                         return result;
                     }
 
-                    using (var client = new HttpClient())
+                    var handler = new HttpClientHandler
+                    {
+                        ClientCertificateOptions = ClientCertificateOption.Manual,
+                        ServerCertificateCustomValidationCallback =
+                            (httpRequestMessage, cert, cetChain, policyErrors) => true
+                    };
+
+                    using (var client = new HttpClient(handler))
                     {
                         Logger.LogDebug(url + " => Not found in cache");
                         var response = await client.GetAsync(url);

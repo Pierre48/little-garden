@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LittleGarden.API</name>
+    </assembly>
+    <members>
+        <member name="M:LittleGarden.API.Controllers.SeedlingController.Get(System.Int32,System.Int32)">
+            <summary>
+            Return seedlings
+            </summary>
+            <param name="page"></param>
+            <param name="pageSize"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+    </members>
+</doc>

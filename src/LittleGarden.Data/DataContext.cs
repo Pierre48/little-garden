@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -39,6 +40,16 @@ namespace LittleGarden.Data
             var filter = Builders<T>.Filter.Eq(field, value);
             return await collection.Find(filter).FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<T>> GetAll(PageConfig page)
+        {
+            var collection = GetCollection();
+            return await collection.Find(_ => true)
+                .Skip((page.Page-1)*page.PageSize)
+                .Limit(page.PageSize)
+                .ToListAsync();
+        }
+
         private IMongoCollection<T> GetCollection()
         {
                         var client = new MongoClient(Parameters.GetStringParameter("MongoDBConnectionString")

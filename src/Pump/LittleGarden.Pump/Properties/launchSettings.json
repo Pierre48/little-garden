@@ -3,7 +3,7 @@
     "LittleGarden.Pump": {
       "commandName": "Project",
       "environmentVariables": {
-        "MetricsPort": "9998"
+        "MetricsPort": "8888"
       }
     }
   }
