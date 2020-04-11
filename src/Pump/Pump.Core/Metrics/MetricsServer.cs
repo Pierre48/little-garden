@@ -4,12 +4,20 @@ using System.Collections.Generic;
 using System.Threading;
 using Ppl.Core.Extensions;
 using System.Threading.Tasks;
+using Ppl.Core.Docker;
 
 namespace Pump.Core.Metrics
 {
     public class MetricsServer : IMetricsServer
     {
+        public MetricsServer(ContainerParameters parameters) 
+        {
+            Parameters = parameters;
+        }
         private Dictionary<string, IGauge> counters = new Dictionary<string, IGauge>();
+
+        public ContainerParameters Parameters { get; }
+
         public void Set(string name, double value)
         {
             GetCounter(name).Set(value);
@@ -17,7 +25,7 @@ namespace Pump.Core.Metrics
 
         public void Open() 
         {
-            var server = new Prometheus.MetricServer(hostname:"127.0.0.1", port: 9999);//TODO To Configure
+            var server = new Prometheus.MetricServer(port: Parameters.GetIntParameter("MetricsPort"));
             server.Start();
 
             Task.Run(() =>

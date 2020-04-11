@@ -17,9 +17,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleGarden.Data", "Little
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LittleGarden.API", "LittleGarden.API\LittleGarden.API.csproj", "{2CA3424B-6C2C-4C2C-A9B7-367B442037EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pump.Core", "Pump\Pump.Core\Pump.Core.csproj", "{89EAE8F7-68B1-4F2B-974A-0D400B04D383}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pump.Core", "Pump\pump.Core\Pump.Core.csproj", "{89EAE8F7-68B1-4F2B-974A-0D400B04D383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ppl.Core", "Ppl.Core\Ppl.Core.csproj", "{B8BAE45B-A16D-4827-8359-E4B021C24E63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ppl.Core", "Ppl.Core\Ppl.Core.csproj", "{B8BAE45B-A16D-4827-8359-E4B021C24E63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E6768FEF-9615-4963-B4DA-259C73DB8558}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

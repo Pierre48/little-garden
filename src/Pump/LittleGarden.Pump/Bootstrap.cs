@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using LittleGarden.Data;
 using Ppl.Core.Extensions;
+using Ppl.Core.Docker;
 using LittleGarden.Core.Bus;
 using LittleGarden.Core.Entities;
 using LittleGarden.Core.Bus.Events;
@@ -24,6 +25,8 @@ namespace LittleGarden.Pump
         {
             //setup our DI
             var serviceProvider = new ServiceCollection()
+                .DefineInputParameters("MetricsPort", 9999)
+                .DefineInputParameters("MongoDBConnectionString", "mongodb://root:example@localhost/")
                 .AddLogging(configure => configure.AddConsole())
                 .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug)
                 .AddSingleton<IHttpExtractor, HttpExtractor>()
@@ -37,6 +40,8 @@ namespace LittleGarden.Pump
             logger.LogDebug("Starting application");
 
             //do the actual work here
+            var parameters = serviceProvider.GetService<ContainerParameters>();
+            parameters.LogParameters();
             var metricsServer = serviceProvider.GetService<IMetricsServer>();
              metricsServer.Open();
             var bus = serviceProvider.GetService<IBus>();
@@ -54,7 +59,10 @@ namespace LittleGarden.Pump
             serviceProvider.GetServices<IPump>().ForEach(p=>
             {
                 logger.LogInformation($"Starting {p}");
-                p.Run();
+                p.Run().ContinueWith(t =>
+                {
+                    logger.LogError(t.Exception.GetFullMessage());
+                },TaskContinuationOptions.OnlyOnFaulted);
                 });
 
             logger.LogDebug("All done!");

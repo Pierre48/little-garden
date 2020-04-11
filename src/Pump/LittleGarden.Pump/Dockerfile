@@ -24,5 +24,4 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends libgdiplus libc6-dev \
     && apt-get install libsnappy1v5 \
     && rm -rf /var/lib/apt/lists/* 
-RUN ls -l
 ENTRYPOINT ["dotnet", "LittleGarden.Pump.dll"]

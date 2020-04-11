@@ -43,6 +43,7 @@ namespace PumpComptoirDesGraines
         {
             logger.LogDebug($"Srapping menu link from {urlRoot}");
             var rootHtml = await httpExtractor.GetHtml(urlRoot);
+            logger.LogDebug($"root page was scrapped.");
             var menuHtml = Regex.Match(rootHtml, @"<div id=""header_menu"">(.*)<\/div><\/div><\/div><\/div><\/div>")
                 .Groups[0]
                 .Value;
@@ -105,7 +106,7 @@ namespace PumpComptoirDesGraines
                     .ForEach(m =>
                     {
                         var title = m.Groups[1].Value;
-                        var value = HtmlUtilities.ConvertToPlainText(m.Groups[2].Value);
+                        var value = HtmlUtilities.ConvertToPlainText(m.Groups[2].Value).Trim().Replace("\r", "").Replace("\'", "'");
                         if (title== "Nom latin") seedling.NomLatin = value;
                         else if (title == "Nom vernaculaire") seedling.NomVernaculaire = value;
                         else if (title == "Intérêt") seedling.Interet = value;

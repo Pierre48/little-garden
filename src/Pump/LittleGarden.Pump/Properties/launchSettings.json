@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LittleGarden.Pump": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "MetricsPort": "9998"
+      }
+    }
+  }
+}

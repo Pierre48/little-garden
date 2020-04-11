@@ -1,18 +1,19 @@
 version: '3.1'
 services:
-  littlegarden-pump:
+  pump:
     build:
       context: .
       dockerfile: src/Pump/LittleGarden.Pump/Dockerfile
       args:
         buildno: 1
-    # environment:
-    #   - DB_SERVER=database
-    #   - ASPNETCORE_URLS=http://+:8001
+    environment:
+      - MongoDBConnectionString=mongodb://root:example@mongo/
+    volumes:
+      - httpCall:/app/httpCall
     depends_on: 
       - mongo
     ports:
-      - "9999:9999"
+      - 9999:9999
     networks: 
       pump-network:
   mongo:
@@ -177,7 +178,7 @@ services:
     container_name: kibana
     environment:
       SERVER_NAME: localhost
-      ELASTICSEARCH_URL: http://elasticsearch1:9200/
+      ELASTICSEARCH_URL: http://elasticsearch:9200/
     ports:
       - 5601:5601
     volumes:
@@ -319,6 +320,7 @@ volumes:
   esdata2:
   esdata3:
   mongodata: 
+  httpCall:
   logs:
 
 networks:

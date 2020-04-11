@@ -33,9 +33,8 @@ namespace Pump.Core
         {
             Logger = logger;
             Metrics = metrics;
-            var temp = Path.GetTempPath();
             var options = new DbOptions().SetCreateIfMissing(true).EnableStatistics();
-            db = RocksDb.Open(options, Environment.ExpandEnvironmentVariables(Path.Combine(temp, "httpCall")));
+            db = RocksDb.Open(options, Environment.ExpandEnvironmentVariables(Path.Combine(Environment.CurrentDirectory, "httpCall")));
         }
         public async Task<string> GetHtml(string url, Param[] parameters = null)
         {
@@ -44,7 +43,7 @@ namespace Pump.Core
             {
                 try
                 {
-                    Logger.LogInformation("Scrapping " + url + "...");
+                    Logger.LogDebug("Scrapping " + url + "...");
 
                     string result =  db.Get(url);
                     if (!string.IsNullOrWhiteSpace(result))
@@ -56,19 +55,22 @@ namespace Pump.Core
 
                     using (var client = new HttpClient())
                     {
+                        Logger.LogDebug(url + " => Not found in cache");
                         var response = await client.GetAsync(url);
+                        Logger.LogDebug(url + " => Http request done : " + response.StatusCode);
                         result = await response.Content.ReadAsStringAsync();
                         result = result.Replace("\n", "")
                         .Replace("\t", "")
                         .Replace("\\\"", "\"");
                         db.Put(url, result);
                         Metrics.Inc("pump_httpextractor_nbloadedfromhttp", 1);
+                        Logger.LogDebug(url + " => Loaded from http");
                         return result;
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.LogError(e.Message);
+                    Logger.LogError(e.GetFullMessage());
                     Thread.Sleep(60000);
                 }
             }

@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using LittleGarden.Core.Entities;
 using Pump.Core.Metrics;
+using Ppl.Core.Docker;
 
 namespace LittleGarden.Data
 {
@@ -11,13 +12,16 @@ namespace LittleGarden.Data
     {
         private readonly IMetricsServer metrics;
 
-        public  DataContext(IMetricsServer metrics)
+        public ContainerParameters Parameters { get; }
+
+        public  DataContext(IMetricsServer metrics, ContainerParameters parameters)
             {
             this.metrics = metrics;
+            Parameters = parameters;
         }
         public async Task Save(T entity)
         {
-            var collection = GetCollection<T>(); 
+            var collection = GetCollection(); 
 
             lock (this)
             {
@@ -31,14 +35,13 @@ namespace LittleGarden.Data
 
         public async Task<T> GetOne(string field, object value)
         {
-            var collection = GetCollection<T>();            
+            var collection = GetCollection();            
             var filter = Builders<T>.Filter.Eq(field, value);
             return await collection.Find(filter).FirstOrDefaultAsync();
         }
-        private IMongoCollection<T> GetCollection<T>()
+        private IMongoCollection<T> GetCollection()
         {
-                        var client = new MongoClient(
-                "mongodb://root:example@localhost/"
+                        var client = new MongoClient(Parameters.GetStringParameter("MongoDBConnectionString")
             );
             var database = client.GetDatabase("LittleGarden");
             return database.GetCollection<T>(typeof(T).Name);
