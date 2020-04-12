@@ -233,7 +233,7 @@ services:
       - AUDIT_CONTROL
       - AUDIT_READ
     volumes:
-      - .\configs\metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - ./configs/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
       #- /proc:/hostfs/proc:ro
@@ -299,7 +299,7 @@ services:
     ports:
         - 8080:80
     volumes:
-        - .\nginx-config\:/etc/nginx/conf.d/
+        - ./nginx-config/:/etc/nginx/conf.d/
     command: /bin/bash -c "nginx -g 'daemon off;'"
     ulimits:
       nproc: 65535
