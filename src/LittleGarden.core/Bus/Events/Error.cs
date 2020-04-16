@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LittleGarden.Core.Bus.Events
+﻿namespace LittleGarden.Core.Bus.Events
 {
     public class Error : Event
     {

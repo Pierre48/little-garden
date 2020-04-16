@@ -9,33 +9,22 @@ namespace Ppl.Core.Extensions
     {
         public static IEnumerable<T> Select<T>(this MatchCollection collection, Func<Match, T> func)
         {
-            foreach (Match m in collection)
-            {
-                yield return func(m);
-            }
+            foreach (Match m in collection) yield return func(m);
         }
+
         public static void ForEach(this MatchCollection collection, Action<Match> action)
         {
-            foreach (Match m in collection)
-            {
-                action(m);
-            }
-        }             
-        
+            foreach (Match m in collection) action(m);
+        }
+
         public static async void ForEachAsync(this MatchCollection collection, Func<Match, Task> action)
         {
-            for (int i=0;i < collection.Count;i++)
-            {
-                await action(collection[i]);
-            }
-        }        
-        
+            for (var i = 0; i < collection.Count; i++) await action(collection[i]);
+        }
+
         public static IEnumerable<Match> AsIEnumerable(this MatchCollection collection)
         {
-            foreach (Match m in collection)
-            {
-                yield return m;
-            }
+            foreach (Match m in collection) yield return m;
         }
     }
 }

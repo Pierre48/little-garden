@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Pump.Core.Metrics
+﻿namespace Pump.Core.Metrics
 {
     public interface IMetricsServer
     {

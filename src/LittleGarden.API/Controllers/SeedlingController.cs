@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LittleGarden.API.DTO;
 using LittleGarden.Core.Entities;
 using LittleGarden.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
-
 
 namespace LittleGarden.API.Controllers
 {
@@ -18,11 +16,12 @@ namespace LittleGarden.API.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class SeedlingController
     {
-        private readonly ILogger<SeedlingController> _logger;
         private readonly IDataContext<Seedling> _dataContext;
+        private readonly ILogger<SeedlingController> _logger;
         private readonly IMapper _mapper;
 
-        public SeedlingController(ILogger<SeedlingController> logger, IDataContext<Seedling> dataContext, IMapper mapper)
+        public SeedlingController(ILogger<SeedlingController> logger, IDataContext<Seedling> dataContext,
+            IMapper mapper)
         {
             _logger = logger;
             _dataContext = dataContext;
@@ -30,7 +29,7 @@ namespace LittleGarden.API.Controllers
         }
 
         /// <summary>
-        /// Return seedlings
+        ///     Return seedlings
         /// </summary>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>

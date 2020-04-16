@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.IO;
+using System.Reflection;
+using LittleGarden.Data;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.IO;
-using System.Reflection;
-using LittleGarden.Data;
 using Ppl.Core.Docker;
 using Pump.Core.Metrics;
 
@@ -130,8 +125,8 @@ namespace LittleGarden.API
                 .AddSingleton(typeof(IDataContext<>), typeof(DataContext<>))
                 .AddSingleton<IMetricsServer, MetricsServer>();
         }
-        
-        public static void AddCustomDB(this IServiceCollection services,IConfiguration conf)
+
+        public static void AddCustomDB(this IServiceCollection services, IConfiguration conf)
         {
         }
 
@@ -144,7 +139,7 @@ namespace LittleGarden.API
 
                     foreach (var description in provider.ApiVersionDescriptions)
                         options.SwaggerDoc(description.GroupName,
-                            new OpenApiInfo()
+                            new OpenApiInfo
                             {
                                 Title =
                                     $"{typeof(Startup).Assembly.GetCustomAttribute<AssemblyProductAttribute>().Product} {description.ApiVersion}",

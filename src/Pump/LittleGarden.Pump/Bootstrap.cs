@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using LittleGarden.Core.Bus;
+using LittleGarden.Core.Bus.Events;
+using LittleGarden.Core.Entities;
+using LittleGarden.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using LittleGarden.Data;
-using Ppl.Core.Extensions;
-using Ppl.Core.Docker;
-using LittleGarden.Core.Bus;
-using LittleGarden.Core.Entities;
-using LittleGarden.Core.Bus.Events;
-using System.IO;
 using Newtonsoft.Json;
+using Ppl.Core.Docker;
+using Ppl.Core.Extensions;
 using Pump.Core;
 using Pump.Core.Metrics;
-using System.Threading.Tasks;
 
 namespace LittleGarden.Pump
 {
-    class Boostrap
+    internal class Boostrap
     {
-
         public void Start()
         {
             //setup our DI
@@ -43,11 +42,12 @@ namespace LittleGarden.Pump
             var parameters = serviceProvider.GetService<ContainerParameters>();
             parameters.LogParameters();
             var metricsServer = serviceProvider.GetService<IMetricsServer>();
-             metricsServer.Open();
+            metricsServer.Open();
             var bus = serviceProvider.GetService<IBus>();
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
             bus.Subscribe<EntityUpdated<Seedling>>(async e => await seedlingContext.Save(e.Entity));
-            bus.Subscribe<EntityUpdated<Seedling>>(e => logger.LogInformation($"Seedling {e.Entity.NomVernaculaire} is saved"));
+            bus.Subscribe<EntityUpdated<Seedling>>(e =>
+                logger.LogInformation($"Seedling {e.Entity.NomVernaculaire} is saved"));
             bus.Subscribe<Error>(e =>
             {
                 logger.LogError($"Error has occured for {e.Name}\r\n {e.Exception}\r\n{e.StackTrace}");
@@ -56,14 +56,12 @@ namespace LittleGarden.Pump
                 File.WriteAllText($"Errors/{fileName}.json", JsonConvert.SerializeObject(e, Formatting.Indented));
             });
 
-            serviceProvider.GetServices<IPump>().ForEach(p=>
+            serviceProvider.GetServices<IPump>().ForEach(p =>
             {
                 logger.LogInformation($"Starting {p}");
-                p.Run().ContinueWith(t =>
-                {
-                    logger.LogError(t.Exception.GetFullMessage());
-                },TaskContinuationOptions.OnlyOnFaulted);
-                });
+                p.Run().ContinueWith(t => { logger.LogError(t.Exception.GetFullMessage()); },
+                    TaskContinuationOptions.OnlyOnFaulted);
+            });
 
             logger.LogDebug("All done!");
             Console.ReadLine();
@@ -74,18 +72,16 @@ namespace LittleGarden.Pump
     {
         public static IServiceCollection AddPumps(this IServiceCollection serviceCollection)
         {
-            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(location);
+            var location = Assembly.GetEntryAssembly().Location;
+            var directory = Path.GetDirectoryName(location);
             var result = new List<IPump>();
             var assemblies = Directory.GetFiles(directory, "Pump*.dll");
 
             foreach (var assembly in assemblies)
-            {
                 Assembly.LoadFile(assembly)
                     .GetTypes()
                     .Where(t => null != t.GetInterface("IPump"))
-                    .ForEach(t => serviceCollection.AddSingleton(typeof(IPump),t));
-            }
+                    .ForEach(t => serviceCollection.AddSingleton(typeof(IPump), t));
             return serviceCollection;
         }
     }

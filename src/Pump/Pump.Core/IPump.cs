@@ -4,7 +4,7 @@ namespace Pump.Core
 {
     public interface IPump
     {
-         int PumpDelayInSeconds {get;}
-         Task Run();
+        int PumpDelayInSeconds { get; }
+        Task Run();
     }
-}   
+}

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using Ppl.Core.Extensions;
-using System.Threading.Tasks;
-using System.Threading;
-using Microsoft.Extensions.Logging;
-using RocksDbSharp;
 using System.IO;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Ppl.Core.Extensions;
 using Pump.Core.Metrics;
+using RocksDbSharp;
 
 namespace Pump.Core
 {
@@ -19,36 +17,48 @@ namespace Pump.Core
             Key = key;
             Value = value;
         }
+
         public string Key { get; set; }
         public string Value { get; set; }
     }
 
     public class HttpExtractor : IHttpExtractor, IDisposable
     {
-        private ILogger<HttpExtractor> Logger { get; }
-        public IMetricsServer Metrics { get; }
+        private readonly RocksDb db;
+        private bool disposed;
 
-        readonly RocksDb db = null;
         public HttpExtractor(ILogger<HttpExtractor> logger, IMetricsServer metrics)
         {
             Logger = logger;
             Metrics = metrics;
-            var options = new DbOptions().SetCreateIfMissing(true).EnableStatistics();
-            db = RocksDb.Open(options, Environment.ExpandEnvironmentVariables(Path.Combine(Environment.CurrentDirectory, "httpCall")));
+            var options = new DbOptions().SetCreateIfMissing().EnableStatistics();
+            db = RocksDb.Open(options,
+                Environment.ExpandEnvironmentVariables(Path.Combine(Environment.CurrentDirectory, "httpCall")));
         }
+
+        private ILogger<HttpExtractor> Logger { get; }
+        public IMetricsServer Metrics { get; }
+
+        public void Dispose()
+        {
+            // Dispose of unmanaged resources.
+            Dispose(true);
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
+        }
+
         public async Task<string> GetHtml(string url, Param[] parameters = null)
         {
             parameters?.ForEach(p => url = url.Replace("{" + p.Key + "}", p.Value));
             while (true)
-            {
                 try
                 {
                     Logger.LogDebug("Scrapping " + url + "...");
 
-                    string result =  db.Get(url);
+                    var result = db.Get(url);
                     if (!string.IsNullOrWhiteSpace(result))
                     {
-                        Metrics.Inc("pump_httpextractor_nbloadedfromcache",1);
+                        Metrics.Inc("pump_httpextractor_nbloadedfromcache", 1);
                         Logger.LogDebug(url + " => Loaded from cache :):):)");
                         return result;
                     }
@@ -67,8 +77,8 @@ namespace Pump.Core
                         Logger.LogDebug(url + " => Http request done : " + response.StatusCode);
                         result = await response.Content.ReadAsStringAsync();
                         result = result.Replace("\n", "")
-                        .Replace("\t", "")
-                        .Replace("\\\"", "\"");
+                            .Replace("\t", "")
+                            .Replace("\\\"", "\"");
                         db.Put(url, result);
                         Metrics.Inc("pump_httpextractor_nbloadedfromhttp", 1);
                         Logger.LogDebug(url + " => Loaded from http");
@@ -80,10 +90,9 @@ namespace Pump.Core
                     Logger.LogError(e.GetFullMessage());
                     Thread.Sleep(60000);
                 }
-            }
         }
 
-        public async Task<Byte[]> GetBytes(string url, Param[] parameters = null)
+        public async Task<byte[]> GetBytes(string url, Param[] parameters = null)
         {
             parameters?.ForEach(p => url = url.Replace("{" + p.Key + "}", p.Value));
             using (var client = new HttpClient())
@@ -100,20 +109,9 @@ namespace Pump.Core
             if (disposed)
                 return;
 
-            if (disposing)
-            {
-                db?.Dispose();
-            }
+            if (disposing) db?.Dispose();
 
             disposed = true;
-        }
-        bool disposed = false;
-        public void Dispose()
-        {
-            // Dispose of unmanaged resources.
-            Dispose(true);
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
         }
     }
 }

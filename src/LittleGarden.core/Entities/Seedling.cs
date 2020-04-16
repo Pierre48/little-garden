@@ -1,13 +1,13 @@
-﻿using LittleGarden.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LittleGarden.Core.Entities
+﻿namespace LittleGarden.Core.Entities
 {
     public class Seedling : Entity
     {
-        public override byte[] _id { get { return HashToInt(Name); } set { } }
+        public override byte[] _id
+        {
+            get => HashToInt(Name);
+            set { }
+        }
+
         public string NomLatin { get; set; }
         public string NomVernaculaire { get; set; }
         public string Interet { get; set; }
@@ -26,5 +26,16 @@ namespace LittleGarden.Core.Entities
         public string Autres { get; set; }
         public string Fruits { get; set; }
         public string Name { get; set; }
+        public string Arrosage { get; set; }
+        public string MaladiesRavageurs { get; set; }
+        public string CultureAuJardin { get; set; }
+        public string Substrat { get; set; }
+        public string Exposition { get; set; }
+        public string CultureEnPot { get; set; }
+        public string Proprietes { get; set; }
+        public string Facilite { get; set; }
+        public string ModeDeSemis { get; set; }
+        public string DureeDeGermination { get; set; }
+        public string TechniquesDeSemis { get; set; }
     }
 }

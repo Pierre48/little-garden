@@ -4,11 +4,11 @@ using LittleGarden.Core.Entities;
 
 namespace LittleGarden.Data
 {
-    public interface IDataContext<T> where T:Entity
+    public interface IDataContext<T> where T : Entity
     {
-         Task Save(T entity);
+        Task Save(T entity);
 
-         Task<T> GetOne(string field, object value);
-         Task<IEnumerable<T>> GetAll(PageConfig page);
+        Task<T> GetOne(string field, object value);
+        Task<IEnumerable<T>> GetAll(PageConfig page);
     }
 }
