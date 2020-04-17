@@ -1,10 +1,13 @@
-﻿namespace LittleGarden.Core.Entities
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace LittleGarden.Core.Entities
 {
-    public class Seedling : Entity
+    public class Seedling : IEntity
     {
-        public override byte[] _id
+        public byte[] _id
         {
-            get => HashToInt(Name);
+            get => Name==null?null:SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(Name));
             set { }
         }
 
@@ -37,5 +40,9 @@
         public string ModeDeSemis { get; set; }
         public string DureeDeGermination { get; set; }
         public string TechniquesDeSemis { get; set; }
+        public string Conseil { get; set; }
+        public string Recolte { get; set; }
+        public string Conservation { get; set; }
     }
+
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LittleGarden.Core.Bus.Events;
 using Microsoft.Extensions.Logging;
 using Ppl.Core.Extensions;
@@ -17,7 +18,7 @@ namespace LittleGarden.Core.Bus
 
         public ILogger<Bus> Logger { get; }
 
-        public void Publish<T>(T data) where T : Event
+        public async Task Publish<T>(T data) where T : IEvent
         {
             if (_callbacks.ContainsKey(typeof(T)))
                 try
@@ -30,7 +31,7 @@ namespace LittleGarden.Core.Bus
                 }
         }
 
-        public void Subscribe<T>(Action<T> callback) where T : Event
+        public async Task Subscribe<T>(Action<T> callback) where T : IEvent
         {
             lock (_callbacks)
             {
