@@ -24,6 +24,7 @@ namespace LittleGarden.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCustomCors(Configuration,Environment);
             services.AddCustomDB(Configuration);
             services.AddCustomServices();
             services.AddCustomSwagger();

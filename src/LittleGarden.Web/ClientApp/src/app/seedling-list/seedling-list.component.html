@@ -1,0 +1,20 @@
+<p *ngIf="!seedlings"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="seedlings">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Nom</th>
+            <th>Origine</th>
+            <th>Interet</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let seedling of seedlings">
+            <td><img class="nav-link" src="assets/icons/detail.png" [routerLink]="['/seedlingdetail/',seedling._id]" routerLinkActive="active"></td>
+            <td>{{ seedling.name }}</td>
+            <td>{{ seedling.origine }}</td>
+            <td>{{ seedling.interet }}</td>
+        </tr>
+    </tbody>
+</table>
