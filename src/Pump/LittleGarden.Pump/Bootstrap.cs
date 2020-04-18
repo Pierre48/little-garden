@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using LittleGarden.Core.Bus;
 using LittleGarden.Core.Bus.Events;
 using LittleGarden.Core.Entities;
@@ -11,7 +11,7 @@ using LittleGarden.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Ppl.Core.Docker;
+using Ppl.Core.Container;
 using Ppl.Core.Extensions;
 using Pump.Core;
 using Pump.Core.Metrics;
@@ -26,12 +26,15 @@ namespace LittleGarden.Pump
             var serviceProvider = new ServiceCollection()
                 .DefineInputParameters("MetricsPort", 9999)
                 .DefineInputParameters("MongoDBConnectionString", "mongodb://root:example@localhost/")
+                .DefineInputParameters("KAFKA_BOOTSTRAP_SERVERS","localhost:9092")
+                .DefineInputParameters("KAFKA_SCHEMA_REGISTRY_URLS","http://localhost:8082/")
                 .AddLogging(configure => configure.AddConsole())
                 .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug)
                 .AddSingleton<IHttpExtractor, HttpExtractor>()
-                .AddSingleton<IBus, Bus>()
+                .AddSingleton<IBus, AvroKafkaBus>()
                 .AddSingleton<IMetricsServer, MetricsServer>()
                 .AddSingleton(typeof(IDataContext<>), typeof(DataContext<>))
+                .AddAutoMapper(typeof(AutoMapperEventsProfile))
                 .AddPumps()
                 .BuildServiceProvider();
 
@@ -40,15 +43,18 @@ namespace LittleGarden.Pump
 
             //do the actual work here
             var parameters = serviceProvider.GetService<ContainerParameters>();
+            var mapper = serviceProvider.GetService<IMapper>();
             parameters.LogParameters();
             var metricsServer = serviceProvider.GetService<IMetricsServer>();
             metricsServer.Open();
             var bus = serviceProvider.GetService<IBus>();
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
-            bus.Subscribe<EntityUpdated<Seedling>>(async e => await seedlingContext.Save(e.Entity));
-            bus.Subscribe<EntityUpdated<Seedling>>(e =>
-                logger.LogInformation($"Seedling {e.Entity.NomVernaculaire} is saved"));
-            bus.Subscribe<Error>(e =>
+            bus.Subscribe<SeedlingEvent>(async e =>
+            {
+                await seedlingContext.Save(mapper.Map<Seedling>(e));
+                logger.LogInformation($"Seedling {e.NomVernaculaire} is saved");
+            });
+            bus.Subscribe<ErrorEvent>(e =>
             {
                 logger.LogError($"Error has occured for {e.Name}\r\n {e.Exception}\r\n{e.StackTrace}");
                 if (!Directory.Exists("Errors")) Directory.CreateDirectory("Errors");
@@ -72,9 +78,8 @@ namespace LittleGarden.Pump
     {
         public static IServiceCollection AddPumps(this IServiceCollection serviceCollection)
         {
-            var location = Assembly.GetEntryAssembly().Location;
+            var location = Assembly.GetEntryAssembly()?.Location;
             var directory = Path.GetDirectoryName(location);
-            var result = new List<IPump>();
             var assemblies = Directory.GetFiles(directory, "Pump*.dll");
 
             foreach (var assembly in assemblies)

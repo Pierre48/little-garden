@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AutoMapper;
 using LittleGarden.Core.Bus;
 using LittleGarden.Core.Bus.Events;
-using LittleGarden.Core.Entities;
 using Microsoft.Extensions.Logging;
 using Ppl.Core.Extensions;
 using Pump.Core;
 using ReadSharp;
+using Seedling = LittleGarden.Core.Entities.Seedling;
 
 namespace PumpComptoirDesGraines
 {
@@ -19,11 +20,13 @@ namespace PumpComptoirDesGraines
         private readonly IHttpExtractor _httpExtractor;
 
         private readonly ILogger<Pump> _logger;
+        private readonly IMapper _mapper;
 
-        public Pump(IBus bus, ILogger<Pump> logger,
+        public Pump(IBus bus, ILogger<Pump> logger,IMapper mapper,
             IHttpExtractor httpExtractor)
         {
             this._logger = logger;
+            _mapper = mapper;
             this._httpExtractor = httpExtractor;
             this._bus = bus;
         }
@@ -79,7 +82,7 @@ namespace PumpComptoirDesGraines
             }
             catch (Exception e)
             {
-                _bus.Publish(new Error {Exception = e.Message, Name = value, StackTrace = e.StackTrace});
+                await _bus.Publish(new ErrorEvent {Exception = e.Message, Name = value, StackTrace = e.StackTrace});
             }
         }
 
@@ -95,7 +98,7 @@ namespace PumpComptoirDesGraines
             ExtractProperties(rootHtml, seedling);
             ExtractTips(rootHtml, seedling);
             
-            _bus.Publish(new EntityUpdated<Seedling>(seedling));
+            await _bus.Publish(_mapper.Map<SeedlingEvent>(seedling));
         }
 
         private void ExtractTips(string rootHtml, Seedling seedling)
@@ -153,6 +156,9 @@ namespace PumpComptoirDesGraines
                         else if (title == "Culture au jardin") seedling.CultureAuJardin = value;
                         else if (title == "Culture en pot") seedling.CultureEnPot = value;
                         else if (title == "Propriétés") seedling.Proprietes = value;
+                        else if (title == "Conseils du comptoir des graines") seedling.Conseil = value;
+                        else if (title == "Recolte") seedling.Recolte = value;
+                        else if (title == "Conservation") seedling.Conservation = value;
                         else _logger.LogWarning($"Unknown property in product description : {title}\\{value}");
                     });
             }

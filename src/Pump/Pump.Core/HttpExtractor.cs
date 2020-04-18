@@ -24,15 +24,15 @@ namespace Pump.Core
 
     public class HttpExtractor : IHttpExtractor, IDisposable
     {
-        private readonly RocksDb db;
-        private bool disposed;
+        private readonly RocksDb _db;
+        private bool _disposed;
 
         public HttpExtractor(ILogger<HttpExtractor> logger, IMetricsServer metrics)
         {
             Logger = logger;
             Metrics = metrics;
             var options = new DbOptions().SetCreateIfMissing().EnableStatistics();
-            db = RocksDb.Open(options,
+            _db = RocksDb.Open(options,
                 Environment.ExpandEnvironmentVariables(Path.Combine(Environment.CurrentDirectory, "httpCall")));
         }
 
@@ -55,7 +55,7 @@ namespace Pump.Core
                 {
                     Logger.LogDebug("Scrapping " + url + "...");
 
-                    var result = db.Get(url);
+                    var result = _db.Get(url);
                     if (!string.IsNullOrWhiteSpace(result))
                     {
                         Metrics.Inc("pump_httpextractor_nbloadedfromcache", 1);
@@ -79,7 +79,7 @@ namespace Pump.Core
                         result = result.Replace("\n", "")
                             .Replace("\t", "")
                             .Replace("\\\"", "\"");
-                        db.Put(url, result);
+                        _db.Put(url, result);
                         Metrics.Inc("pump_httpextractor_nbloadedfromhttp", 1);
                         Logger.LogDebug(url + " => Loaded from http");
                         return result;
@@ -106,12 +106,12 @@ namespace Pump.Core
         // Protected implementation of Dispose pattern.
         protected virtual void Dispose(bool disposing)
         {
-            if (disposed)
+            if (_disposed)
                 return;
 
-            if (disposing) db?.Dispose();
+            if (disposing) _db?.Dispose();
 
-            disposed = true;
+            _disposed = true;
         }
     }
 }

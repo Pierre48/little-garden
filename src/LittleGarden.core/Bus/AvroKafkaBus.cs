@@ -4,7 +4,6 @@ using System.Reflection;
 using Confluent.Kafka;
 using LittleGarden.Core.Bus.Events;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka.SyncOverAsync;

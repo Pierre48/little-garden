@@ -4,9 +4,22 @@
         <name>LittleGarden.API</name>
     </assembly>
     <members>
+        <member name="T:LittleGarden.API.Controllers.SeedlingController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LittleGarden.API.Controllers.SeedlingController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.SeedlingController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Seedling},AutoMapper.IMapper)">
+            <summary>
+            
+            </summary>
+            <param name="logger"></param>
+            <param name="dataContext"></param>
+            <param name="mapper"></param>
+        </member>
         <member name="M:LittleGarden.API.Controllers.SeedlingController.Get(System.Int32,System.Int32)">
             <summary>
-            Return seedlings
+                Return seedlings
             </summary>
             <param name="page"></param>
             <param name="pageSize"></param>

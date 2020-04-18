@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ppl.Core.Extensions;
 
-namespace Ppl.Core.Docker
+namespace Ppl.Core.Container
 {
     public static class ContainerParametersExtensions
     {
@@ -19,7 +19,7 @@ namespace Ppl.Core.Docker
                 if (Container == null)
                 {
                     services.AddSingleton<ContainerParameters>();
-                    ContainerParameters.parameters[name] = value;
+                    ContainerParameters.Parameters[name] = value;
                 }
             }
 
@@ -29,14 +29,14 @@ namespace Ppl.Core.Docker
 
     public class ContainerParameters
     {
-        internal static readonly Dictionary<string, object> parameters = new Dictionary<string, object>();
-        internal readonly Dictionary<string, object> defaultParameters = new Dictionary<string, object>();
+        internal static readonly Dictionary<string, object> Parameters = new Dictionary<string, object>();
+        internal readonly Dictionary<string, object> DefaultParameters = new Dictionary<string, object>();
 
         public ContainerParameters(ILogger<ContainerParameters> logger)
         {
-            parameters.ForEach(kv => defaultParameters[kv.Key] = kv.Value);
+            Parameters.ForEach(kv => DefaultParameters[kv.Key] = kv.Value);
             foreach (string k in Environment.GetEnvironmentVariables().Keys)
-                parameters[k] = Environment.GetEnvironmentVariable(k);
+                Parameters[k] = Environment.GetEnvironmentVariable(k);
             Logger = logger;
         }
 
@@ -45,11 +45,11 @@ namespace Ppl.Core.Docker
         public void LogParameters()
         {
             var strb = new StringBuilder();
-            parameters.ForEach(kv =>
+            Parameters.ForEach(kv =>
                 {
                     strb.AppendLine($" - Parameter {kv.Key} = {kv.Value}.");
-                    if (defaultParameters.ContainsKey(kv.Key))
-                        strb.AppendLine($"   Default value was {defaultParameters[kv.Key]}.");
+                    if (DefaultParameters.ContainsKey(kv.Key))
+                        strb.AppendLine($"   Default value was {DefaultParameters[kv.Key]}.");
                 }
             );
             Logger.LogDebug(strb.ToString());
@@ -58,7 +58,7 @@ namespace Ppl.Core.Docker
         public int GetIntParameter(string name)
         {
             object value;
-            if (!parameters.TryGetValue(name, out value)) throw new ArgumentException($"Unknown parameter : {name}");
+            if (!Parameters.TryGetValue(name, out value)) throw new ArgumentException($"Unknown parameter : {name}");
             Logger.LogDebug($"Get value {name} : {value}");
             return value == null ? 0 : int.Parse(value.ToString());
         }
@@ -66,7 +66,7 @@ namespace Ppl.Core.Docker
         public string GetStringParameter(string name)
         {
             object value;
-            if (!parameters.TryGetValue(name, out value)) throw new ArgumentException($"Unknown parameter : {name}");
+            if (!Parameters.TryGetValue(name, out value)) throw new ArgumentException($"Unknown parameter : {name}");
             return value?.ToString();
         }
     }

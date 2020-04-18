@@ -3,19 +3,19 @@ using System.Threading.Tasks;
 using LittleGarden.Core.Entities;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Ppl.Core.Docker;
+using Ppl.Core.Container;
 using Pump.Core.Metrics;
 
 namespace LittleGarden.Data
 {
     public class DataContext<T> : IDataContext<T>
-        where T : Entity
+        where T : IEntity
     {
-        private readonly IMetricsServer metrics;
+        private readonly IMetricsServer _metrics;
 
         public DataContext(IMetricsServer metrics, ContainerParameters parameters)
         {
-            this.metrics = metrics;
+            this._metrics = metrics;
             Parameters = parameters;
         }
 
@@ -27,11 +27,11 @@ namespace LittleGarden.Data
 
             lock (this)
             {
-                var result = collection.ReplaceOne(
+                collection.ReplaceOne(
                     new BsonDocument("_id", entity._id),
                     options: new ReplaceOptions {IsUpsert = true},
                     replacement: entity);
-                metrics.Inc($"pump_data_{typeof(T).Name}_updatedrecords", 1);
+                _metrics.Inc($"pump_data_{typeof(T).Name}_updatedrecords", 1);
             }
         }
 

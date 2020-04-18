@@ -4,7 +4,7 @@ using LittleGarden.Core.Entities;
 
 namespace LittleGarden.Data
 {
-    public interface IDataContext<T> where T : Entity
+    public interface IDataContext<T> where T : IEntity
     {
         Task Save(T entity);
 

@@ -29,7 +29,6 @@ namespace LittleGarden.API
             services.AddCustomSwagger();
             services.AddCustomSwaggerGen(Environment);
             services.AddAutoMapper(typeof(Startup).Assembly);
-            services.AddAutoMapper(typeof(Startup).Assembly);
         }
 
 
