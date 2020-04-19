@@ -7,7 +7,6 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
 import { SeedlingListComponent } from './seedling-list/seedling-list.component';
 import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.component';
 
@@ -16,7 +15,6 @@ import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.compo
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
     SeedlingListComponent,
     SeedlingDetailComponent
   ],
@@ -25,11 +23,10 @@ import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.compo
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
+      { path: '', component: SeedlingListComponent, pathMatch: 'full' },
       { path: 'seedlingdetail/:id', component: SeedlingDetailComponent },
       { path: 'seedlinglist', component: SeedlingListComponent },
-      { path: '**', component: HomeComponent, pathMatch: 'full' },
+      { path: '**', component: SeedlingListComponent, pathMatch: 'full' },
     ])
   ],
   providers: [],

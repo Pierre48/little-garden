@@ -10,7 +10,9 @@ namespace LittleGarden.API
         {
             public AutoMappingProfiles()
             {
-                CreateMap<Seedling, SeedlingDto>().ReverseMap();
+                CreateMap<Seedling, SeedlingDto>().ForMember(
+                    d => d.Id, 
+                    o => o.MapFrom(s=> s._id.ToString()));
             }
         }
     }

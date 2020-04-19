@@ -2,7 +2,7 @@
 {
     public class SeedlingDto
     {
-        public byte[] _id { get; set; }
+        public string Id { get; set; }
         public string NomLatin { get; set; }
         public string NomVernaculaire { get; set; }
         public string Interet { get; set; }
@@ -35,5 +35,8 @@
         public string Conseil { get; set; }
         public string Recolte { get; set; }
         public string Conservation { get; set; }
+        public string AssociationDefavorable { get; set; }
+        public string AssociationFavorable { get; set; }
+        public string Phytoepuration { get; set; }
     }
 }

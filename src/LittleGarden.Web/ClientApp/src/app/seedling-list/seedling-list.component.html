@@ -11,7 +11,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let seedling of seedlings">
-            <td><img class="nav-link" src="assets/icons/detail.png" [routerLink]="['/seedlingdetail/',seedling._id]" routerLinkActive="active"></td>
+            <td><img class="nav-link" src="assets/icons/detail.png" [routerLink]="['/seedlingdetail/',seedling.id]" routerLinkActive="active"></td>
             <td>{{ seedling.name }}</td>
             <td>{{ seedling.origine }}</td>
             <td>{{ seedling.interet }}</td>

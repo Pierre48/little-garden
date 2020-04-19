@@ -92,7 +92,7 @@ namespace PumpComptoirDesGraines
 
             var seedling = new Seedling
             {
-                Name = Regex.Match(rootHtml, @"<title>(.*) - Le Comptoir des Graines<\/title>").Groups[1].Value
+                Name = Regex.Match(rootHtml, @"<title>(.*) - Le Comptoir des Graines<\/title>").Groups[1].Value?.Replace("Graines de ","")
             };
 
             ExtractProperties(rootHtml, seedling);
@@ -159,6 +159,9 @@ namespace PumpComptoirDesGraines
                         else if (title == "Conseils du comptoir des graines") seedling.Conseil = value;
                         else if (title == "Recolte") seedling.Recolte = value;
                         else if (title == "Conservation") seedling.Conservation = value;
+                        else if (title == "Associations défavorables au jardin") seedling.AssociationDefavorable = value;
+                        else if (title == "Associations favorables au jardin") seedling.AssociationFavorable = value;
+                        else if (title == "Phytoépuration") seedling.Phytoepuration = value;
                         else _logger.LogWarning($"Unknown property in product description : {title}\\{value}");
                     });
             }

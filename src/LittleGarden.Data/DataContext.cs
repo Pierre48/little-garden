@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LittleGarden.Core.Entities;
 using MongoDB.Bson;
@@ -19,19 +21,25 @@ namespace LittleGarden.Data
             Parameters = parameters;
         }
 
-        public ContainerParameters Parameters { get; }
+        private ContainerParameters Parameters { get; }
 
-        public async Task Save(T entity)
+        public async Task Save(T entity, Expression<Func<T,bool>> filter)
         {
             var collection = GetCollection();
-
-            lock (this)
+                T document = default(T);
+            lock(this)
+                document = collection.Find(filter).FirstOrDefault();
+            if (document == null)
             {
-                collection.ReplaceOne(
-                    new BsonDocument("_id", entity._id),
-                    options: new ReplaceOptions {IsUpsert = true},
-                    replacement: entity);
-                _metrics.Inc($"pump_data_{typeof(T).Name}_updatedrecords", 1);
+                lock(this)
+                collection.InsertOne(entity, new InsertOneOptions { });
+                _metrics.Inc($"pump_data_{typeof(T).Name}_inserted_records", 1);
+            }
+            else
+            {
+                entity._id = document._id;
+                collection.ReplaceOne<T>(filter,entity);
+                _metrics.Inc($"pump_data_{typeof(T).Name}_updated_records", 1);
             }
         }
 

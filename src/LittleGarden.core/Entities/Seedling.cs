@@ -1,16 +1,14 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace LittleGarden.Core.Entities
 {
     public class Seedling : IEntity
     {
-        public byte[] _id
-        {
-            get => Name==null?null:SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(Name));
-            set { }
-        }
-
+        public ObjectId _id { get; set; }
         public string NomLatin { get; set; }
         public string NomVernaculaire { get; set; }
         public string Interet { get; set; }
@@ -43,6 +41,9 @@ namespace LittleGarden.Core.Entities
         public string Conseil { get; set; }
         public string Recolte { get; set; }
         public string Conservation { get; set; }
+        public string AssociationDefavorable { get; set; }
+        public string AssociationFavorable { get; set; }
+        public string Phytoepuration { get; set; }
     }
 
 }

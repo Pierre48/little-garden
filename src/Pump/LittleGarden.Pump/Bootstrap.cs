@@ -31,7 +31,7 @@ namespace LittleGarden.Pump
                 .AddLogging(configure => configure.AddConsole())
                 .Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Debug)
                 .AddSingleton<IHttpExtractor, HttpExtractor>()
-                .AddSingleton<IBus, AvroKafkaBus>()
+                .AddSingleton<IBus, Bus>()
                 .AddSingleton<IMetricsServer, MetricsServer>()
                 .AddSingleton(typeof(IDataContext<>), typeof(DataContext<>))
                 .AddAutoMapper(typeof(AutoMapperEventsProfile))
@@ -51,7 +51,7 @@ namespace LittleGarden.Pump
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
             bus.Subscribe<SeedlingEvent>(async e =>
             {
-                await seedlingContext.Save(mapper.Map<Seedling>(e));
+                await seedlingContext.Save(mapper.Map<Seedling>(e), x=>x.Name == e.Name);
                 logger.LogInformation($"Seedling {e.NomVernaculaire} is saved");
             });
             bus.Subscribe<ErrorEvent>(e =>

@@ -10,7 +10,7 @@ export class SeedlingListComponent implements OnInit {
   public seedlings: Seedling[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Seedling[]>('https://localhost:5001/api/v1/Seedling?page=1&pageSize=10000').subscribe(result => {
+    http.get<Seedling[]>('https://localhost:5001/api/v1/Seedling?page=1&pageSize=10').subscribe(result => {
       this.seedlings = result;
     }, error => console.error(error));
   }
@@ -21,7 +21,7 @@ export class SeedlingListComponent implements OnInit {
 }
 
 interface Seedling {
-  _id: [];
+  id: string;
   name: string;
   origine: string;
   temperatureF: number;
