@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
+import { NgImageSliderModule } from 'ng-image-slider';
 import { JwPaginationComponent } from 'jw-angular-pagination';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
@@ -23,6 +23,7 @@ import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.compo
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    NgImageSliderModule,
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: SeedlingListComponent, pathMatch: 'full' },

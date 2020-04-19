@@ -1,4 +1,5 @@
  <h1> {{ seedling.name}} </h1>
+ <ng-image-slider [images]="imageObject" #nav></ng-image-slider>
 <p *ngIf="seedling.nomLatin"><strong>Nom latin : </strong>               {{ seedling.nomLatin}}</p>              
 <p *ngIf="seedling.nomVernaculaire"><strong>Nom Vernaculaire : </strong>        {{ seedling.nomVernaculaire}}</p>        
 <p *ngIf="seedling.interet"><strong>Interet : </strong>                {{ seedling.interet}}</p>                
@@ -34,9 +35,3 @@
 <p *ngIf="seedling.associationDefavorable"><strong>Association défavorable : </strong> {{ seedling.associationDefavorable}}</p> 
 <p *ngIf="seedling.associationFavorable"><strong>Association favorable : </strong>   {{ seedling.associationFavorable}}</p>   
 <p *ngIf="seedling.phytoepuration"><strong>Phytoepuration : </strong>         {{ seedling.phytoepuration}}</p>  
-
-<figure>
-    <div class="fileItem" *ngFor="let url of seedling.imageUrls">
-      <img src="{{url}}" />
-    </div>
-  </figure>

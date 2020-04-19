@@ -1,6 +1,6 @@
-<p *ngIf="!seedlings"><em>Loading...</em></p>
+<p *ngIf="!items"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="seedlings">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="items">
     <thead>
         <tr>
             <th></th>
@@ -18,6 +18,6 @@
         </tr>
     </tbody>
 </table>
-<div class="card-footer pb-0 pt-3">
+<div class="card-footer pb-0 pt-3" *ngIf="items">
     <jw-pagination [items]="items" [pageSize]="10" [maxPages]="5" (changePage)="onChangePage($event)"></jw-pagination>
 </div>

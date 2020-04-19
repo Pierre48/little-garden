@@ -8,9 +8,10 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./seedling-detail.component.css']
 })
 export class SeedlingDetailComponent implements OnInit {
-  public seedling: Seedling;
+  seedling: Seedling;
   id: string;
-  
+  imageObject: Array<object>;
+
   constructor(private route: ActivatedRoute, private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
 
   }
@@ -20,8 +21,18 @@ export class SeedlingDetailComponent implements OnInit {
     console.log(this.id); 
     this.http.get<Seedling>('https://localhost:5001/api/v1/Seedling/'+this.id).subscribe(result => {
       this.seedling = result;
+      this.imageObject = new Array<object>();
+      for (var i = 0; this.seedling.imageUrls.length > i; i++) 
+      {
+        this.imageObject[i] = {
+          image: this.seedling.imageUrls[i].imageUrl,
+          thumbImage: this.seedling.imageUrls[i].thumbImageUrl
+        };
+      }
+      console.log(this.imageObject);
     }, error => console.error(error));
   }
+
 
 }
 
@@ -62,6 +73,10 @@ interface Seedling {
   associationDefavorable: string;
   associationFavorable:   string;
   phytoepuration:         string;
-  imageUrl: string[];
+  imageUrls: Array<Image>;
+}
+interface Image {
+  imageUrl:                     string;
+  thumbImageUrl:               string;
 }
 
