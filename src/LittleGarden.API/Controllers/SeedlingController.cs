@@ -74,7 +74,11 @@ namespace LittleGarden.API.Controllers
 
             var dto = _mapper.Map<Seedling, SeedlingDetailDto>(entity);
             var imagesIds = await _dataContextImage.GetIds(x => x.Name == dto.Name);
-            dto.ImageUrls = imagesIds.Select(id => $"https://localhost:5001/api/v1/Image/{id}").ToList();
+            dto.ImageUrls = imagesIds.Select(id => new ImageDto
+                { 
+                    imageUrl = $"https://localhost:5001/api/v1/Image/{id}",
+                    thumbImageUrl = $"https://localhost:5001/api/v1/Image/thumb/{id}"
+                        }).ToList();
             return Ok(dto);
         }
     }

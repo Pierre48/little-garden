@@ -48,5 +48,17 @@ namespace LittleGarden.API.Controllers
             }
             return File(entity.Bytes, "image/jpeg");
         }
+        [HttpGet]
+        [Route("Thumb/{id}")]
+        public async Task<IActionResult>  GetThumb(string id)
+        {
+            if (!ObjectId.TryParse(id, out var objectID)) return base.Problem($"Provided id ({id}) is misformated.");
+            var entity = await _dataContext.GetOne(nameof(Image._id), objectID);
+            if (entity == null)
+            {
+                return  NotFound($"Image with id {id} does not exist");
+            }
+            return File(entity.ThumbBytes, "image/jpeg");
+        }
     }
 }

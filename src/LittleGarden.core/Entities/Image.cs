@@ -18,6 +18,7 @@ namespace LittleGarden.Core.Entities
         public ObjectId _id { get; set; }
         public string Name { get; set; }
         public byte[] Hash { get; set; }
+        public byte[] ThumbBytes { get; set; }
     }
 
 }

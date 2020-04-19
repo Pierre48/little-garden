@@ -13,6 +13,7 @@ namespace LittleGarden.Core.Bus.Events
 
         public string Name { get; set; }
         public byte[] Hash { get; set; }
+        public byte[] ThumbBytes { get; set; }
 
         /// TODO Not manage in avro
     }

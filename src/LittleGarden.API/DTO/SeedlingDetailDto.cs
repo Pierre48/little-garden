@@ -41,6 +41,6 @@ namespace LittleGarden.API.DTO
         public string AssociationDefavorable { get; set; }
         public string AssociationFavorable { get; set; }
         public string Phytoepuration { get; set; }
-        public List<string> ImageUrls { get; set; } 
+        public List<ImageDto> ImageUrls { get; set; } 
     }
 }

@@ -111,11 +111,16 @@ namespace PumpComptoirDesGraines
                 .Value;
 
             Regex.Matches(imageDiv,
-                    @"https:\/\/www\.comptoir-des-graines\.fr\/.*?\.jpg",
+                    @"<a href=""(https:\/\/.*?\.jpg)"".*?src=""(https:\/\/.*?\.jpg)",
                     RegexOptions.Multiline)
                 .ForEach(m =>
                 {///TODO Async
-                    var img = new ImageEvent {Name = seedling.Name, Bytes = _httpExtractor.GetBytes(m.Value).Result};
+                    var img = new ImageEvent
+                    {
+                        Name = seedling.Name, 
+                        Bytes = _httpExtractor.GetBytes(m.Groups[1].Value).Result,
+                        ThumbBytes = _httpExtractor.GetBytes(m.Groups[2].Value).Result,
+                    };
                     img.Hash = SHA256.Create().ComputeHash( img.Bytes );
                     _bus.Publish(img);
                 });
