@@ -8,15 +8,21 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SeedlingListComponent implements OnInit {
   public seedlings: Seedling[];
+  public items: Seedling[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Seedling[]>('https://localhost:5001/api/v1/Seedling?page=1&pageSize=10').subscribe(result => {
-      this.seedlings = result;
+    http.get<Seedling[]>('https://localhost:5001/api/v1/Seedling?page=1&pageSize=1000000').subscribe(result => {
+      this.items = result;
     }, error => console.error(error));
   }
 
   ngOnInit() {
   }
+
+  onChangePage(seedlings: Array<Seedling>) {
+    // update current page of items
+    this.seedlings = seedlings;
+}
 
 }
 
