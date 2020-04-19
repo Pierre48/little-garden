@@ -10,7 +10,10 @@ namespace LittleGarden.API
         {
             public AutoMappingProfiles()
             {
-                CreateMap<Seedling, SeedlingDto>().ForMember(
+                CreateMap<Seedling, SeedlingListDto>().ForMember(
+                    d => d.Id, 
+                    o => o.MapFrom(s=> s._id.ToString()));
+                CreateMap<Seedling, SeedlingDetailDto>().ForMember(
                     d => d.Id, 
                     o => o.MapFrom(s=> s._id.ToString()));
             }

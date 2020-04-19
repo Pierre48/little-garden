@@ -62,5 +62,6 @@ interface Seedling {
   associationDefavorable: string;
   associationFavorable:   string;
   phytoepuration:         string;
+  imageUrl: string[];
 }
 

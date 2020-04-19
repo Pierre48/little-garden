@@ -49,10 +49,16 @@ namespace LittleGarden.Pump
             metricsServer.Open();
             var bus = serviceProvider.GetService<IBus>();
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
+            var imageContext = serviceProvider.GetService<IDataContext<Image>>();
+            bus.Subscribe<ImageEvent>(async e =>
+            {
+                var created = await imageContext.Create(mapper.Map<Image>(e), x => x.Name == e.Name && x.Hash == e.Hash);
+                if(created) logger.LogInformation($"Image for {e.Name} is saved ");
+            });
             bus.Subscribe<SeedlingEvent>(async e =>
             {
                 await seedlingContext.Save(mapper.Map<Seedling>(e), x=>x.Name == e.Name);
-                logger.LogInformation($"Seedling {e.NomVernaculaire} is saved");
+                logger.LogInformation($"Seedling {e.Name} is saved");
             });
             bus.Subscribe<ErrorEvent>(e =>
             {

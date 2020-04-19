@@ -33,4 +33,10 @@
 <p *ngIf="seedling.conservation"><strong>Conservation : </strong>           {{ seedling.conservation}}</p>           
 <p *ngIf="seedling.associationDefavorable"><strong>Association défavorable : </strong> {{ seedling.associationDefavorable}}</p> 
 <p *ngIf="seedling.associationFavorable"><strong>Association favorable : </strong>   {{ seedling.associationFavorable}}</p>   
-<p *ngIf="seedling.phytoepuration"><strong>Phytoepuration : </strong>         {{ seedling.phytoepuration}}</p>         
+<p *ngIf="seedling.phytoepuration"><strong>Phytoepuration : </strong>         {{ seedling.phytoepuration}}</p>  
+
+<figure>
+    <div class="fileItem" *ngFor="let url of seedling.imageUrls">
+      <img src="{{url}}" />
+    </div>
+  </figure>

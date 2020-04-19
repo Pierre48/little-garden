@@ -4,17 +4,24 @@
         <name>LittleGarden.API</name>
     </assembly>
     <members>
+        <member name="T:LittleGarden.API.Controllers.ImageController">
+            <summary>
+            
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LittleGarden.API.Controllers.ImageController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.ImageController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Image},AutoMapper.IMapper)" -->
         <member name="T:LittleGarden.API.Controllers.SeedlingController">
             <summary>
             
             </summary>
         </member>
-        <member name="M:LittleGarden.API.Controllers.SeedlingController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.SeedlingController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Seedling},AutoMapper.IMapper)">
+        <member name="M:LittleGarden.API.Controllers.SeedlingController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.SeedlingController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Seedling},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Image},AutoMapper.IMapper)">
             <summary>
             
             </summary>
             <param name="logger"></param>
             <param name="dataContext"></param>
+            <param name="dataContextImage"></param>
             <param name="mapper"></param>
         </member>
         <member name="M:LittleGarden.API.Controllers.SeedlingController.Get(System.Int32,System.Int32)">

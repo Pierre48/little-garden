@@ -10,6 +10,7 @@ namespace LittleGarden.Core.Bus.Events
             public AutoMappingProfiles()
             {
                 CreateMap<Seedling, SeedlingEvent>().ReverseMap();
+                CreateMap<Image, ImageEvent>().ReverseMap();
             }
         }
     }

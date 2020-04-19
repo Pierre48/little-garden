@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LittleGarden.Core.Entities;
@@ -25,6 +26,8 @@ namespace LittleGarden.Data
 
         public async Task Save(T entity, Expression<Func<T,bool>> filter)
         {
+            
+            /// All locks are needed ???
             var collection = GetCollection();
                 T document = default(T);
             lock(this)
@@ -57,6 +60,35 @@ namespace LittleGarden.Data
                 .Skip((page.Page - 1) * page.PageSize)
                 .Limit(page.PageSize)
                 .ToListAsync();
+        }
+
+        public async Task<bool> Create(T entity, Expression<Func<T,bool>> filter)
+        {
+            var collection = GetCollection();
+            T document = default(T);
+            lock(this)
+                document = collection.Find(filter).FirstOrDefault();
+            if (document == null)
+            {
+                lock(this)
+                    collection.InsertOne(entity, new InsertOneOptions { });
+                _metrics.Inc($"pump_data_{typeof(T).Name}_inserted_records", 1);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<string[]> GetIds(Expression<Func<T, bool>> filter)
+        {
+            var collection = GetCollection();
+            var result = await collection.FindAsync(filter);
+            var list = new List<String>();
+            while (result.MoveNext())
+            {
+                list.AddRange(result.Current.Select(x => (x._id.ToString())));
+            } 
+
+            return list.ToArray();
         }
 
         private IMongoCollection<T> GetCollection()

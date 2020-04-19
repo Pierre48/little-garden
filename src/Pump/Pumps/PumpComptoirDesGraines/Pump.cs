@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -97,8 +99,27 @@ namespace PumpComptoirDesGraines
 
             ExtractProperties(rootHtml, seedling);
             ExtractTips(rootHtml, seedling);
+            await ExtractPics(rootHtml, seedling);
             
             await _bus.Publish(_mapper.Map<SeedlingEvent>(seedling));
+        }
+
+        private async Task ExtractPics(string rootHtml, Seedling seedling)
+        {
+            var imageDiv = Regex.Match(rootHtml, @"<div id=\""thumbs_list\"">.*?<\/div>", RegexOptions.Multiline)
+                .Groups[0]
+                .Value;
+
+            Regex.Matches(imageDiv,
+                    @"https:\/\/www\.comptoir-des-graines\.fr\/.*?\.jpg",
+                    RegexOptions.Multiline)
+                .ForEach(m =>
+                {///TODO Async
+                    var img = new ImageEvent {Name = seedling.Name, Bytes = _httpExtractor.GetBytes(m.Value).Result};
+                    img.Hash = SHA256.Create().ComputeHash( img.Bytes );
+                    _bus.Publish(img);
+                });
+            
         }
 
         private void ExtractTips(string rootHtml, Seedling seedling)

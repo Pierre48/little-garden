@@ -1,6 +1,9 @@
-﻿namespace LittleGarden.API.DTO
+﻿using System;
+using System.Collections.Generic;
+
+namespace LittleGarden.API.DTO
 {
-    public class SeedlingDto
+    public class SeedlingDetailDto
     {
         public string Id { get; set; }
         public string NomLatin { get; set; }
@@ -38,5 +41,6 @@
         public string AssociationDefavorable { get; set; }
         public string AssociationFavorable { get; set; }
         public string Phytoepuration { get; set; }
+        public List<string> ImageUrls { get; set; } 
     }
 }

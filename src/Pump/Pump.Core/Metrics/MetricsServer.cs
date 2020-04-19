@@ -32,7 +32,7 @@ namespace Pump.Core.Metrics
             Task.Run(() =>
             {
                 _counters.Values.ForEach(x => x.Inc());
-                Thread.Sleep(TimeSpan.FromSeconds(10)); //TODO To Configure
+                Thread.Sleep(TimeSpan.FromSeconds(10)); ///TODO To Configure
             });
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -75,6 +76,7 @@ namespace Pump.Core
                         Logger.LogDebug(url + " => Not found in cache");
                         var response = await client.GetAsync(url);
                         Logger.LogDebug(url + " => Http request done : " + response.StatusCode);
+                        Metrics.Inc("pump_httpextractor_bytesloaded", response.Content.Headers.ContentLength??0);
                         result = await response.Content.ReadAsStringAsync();
                         result = result.Replace("\n", "")
                             .Replace("\t", "")
@@ -87,6 +89,7 @@ namespace Pump.Core
                 }
                 catch (Exception e)
                 {
+                    Metrics.Inc("pump_httpextractor_errors", 1);
                     Logger.LogError(e.GetFullMessage());
                     Thread.Sleep(60000);
                 }
@@ -95,11 +98,36 @@ namespace Pump.Core
         public async Task<byte[]> GetBytes(string url, Param[] parameters = null)
         {
             parameters?.ForEach(p => url = url.Replace("{" + p.Key + "}", p.Value));
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync(url);
-                return await response.Content.ReadAsByteArrayAsync();
-            }
+            var key = Encoding.UTF8.GetBytes(url);
+            while (true)
+                try
+                {
+                    var result = _db.Get(key);
+                    if (result != null)
+                    {
+                        Metrics.Inc("pump_httpextractor_nbfileloadedfromcache", 1);
+                        Logger.LogDebug(url + " => Loaded from cache :):):)");
+                        return result;
+                    }
+
+                    using (var client = new HttpClient())
+                    {
+                        Logger.LogDebug(url + " => Not found in cache");
+                        var response = await client.GetAsync(url);
+                        Logger.LogDebug(url + " => Http request done : " + response.StatusCode);
+                        Metrics.Inc("pump_httpextractor_bytesloaded", response.Content.Headers.ContentLength??0);
+                        Logger.LogDebug(url + " => Loaded from http");
+                        result = await response.Content.ReadAsByteArrayAsync();
+                        _db.Put(key, result);
+                        return result;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Metrics.Inc("pump_httpextractor_errors", 1);
+                    Logger.LogError(e.GetFullMessage());
+                    Thread.Sleep(60000);
+                }
         }
 
 
