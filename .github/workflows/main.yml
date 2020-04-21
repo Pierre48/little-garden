@@ -1,5 +1,8 @@
 name: Build and Publish Docker
 on: [push]
+  branches:
+    - master
+    - 'src/**'
 jobs:
   build:
     runs-on: ubuntu-latest
