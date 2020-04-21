@@ -10,6 +10,12 @@
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:LittleGarden.API.Controllers.ImageController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.ImageController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Image},AutoMapper.IMapper)" -->
+        <member name="T:LittleGarden.API.Controllers.InterestController">
+            <summary>
+            
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LittleGarden.API.Controllers.InterestController.#ctor(Microsoft.Extensions.Logging.ILogger{LittleGarden.API.Controllers.InterestController},LittleGarden.Data.IDataContext{LittleGarden.Core.Entities.Interest},AutoMapper.IMapper)" -->
         <member name="T:LittleGarden.API.Controllers.SeedlingController">
             <summary>
             

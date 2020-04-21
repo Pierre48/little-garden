@@ -53,9 +53,11 @@ namespace LittleGarden.Data
             return await collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll(PageConfig page)
+        public async Task<IEnumerable<T>> GetAll(PageConfig page=null)
         {
             var collection = GetCollection();
+            var result = await collection.FindAsync(_ => true);
+            if (page==null) return await result.ToListAsync();
             return await collection.Find(_ => true)
                 .Skip((page.Page - 1) * page.PageSize)
                 .Limit(page.PageSize)

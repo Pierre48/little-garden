@@ -11,6 +11,7 @@ namespace LittleGarden.Core.Bus.Events
             {
                 CreateMap<Seedling, SeedlingEvent>().ReverseMap();
                 CreateMap<Image, ImageEvent>().ReverseMap();
+                CreateMap<Interest, InterestEvent>().ReverseMap();
             }
         }
     }

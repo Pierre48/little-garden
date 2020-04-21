@@ -50,6 +50,7 @@ namespace LittleGarden.Pump
             var bus = serviceProvider.GetService<IBus>();
             var seedlingContext = serviceProvider.GetService<IDataContext<Seedling>>();
             var imageContext = serviceProvider.GetService<IDataContext<Image>>();
+            var interestContext = serviceProvider.GetService<IDataContext<Interest>>();
             bus.Subscribe<ImageEvent>(async e =>
             {
                 var created = await imageContext.Create(mapper.Map<Image>(e), x => x.Name == e.Name && x.Hash == e.Hash);
@@ -59,6 +60,13 @@ namespace LittleGarden.Pump
             {
                 await seedlingContext.Save(mapper.Map<Seedling>(e), x=>x.Name == e.Name);
                 logger.LogInformation($"Seedling {e.Name} is saved");
+
+                e.Interet?.Split(",").ForEach(i => bus.Publish(new InterestEvent {Name = i.Trim()}));
+            });
+            bus.Subscribe<InterestEvent>(async e =>
+            {
+                var created = await interestContext.Create(mapper.Map<Interest>(e), x=>x.Name == e.Name);
+                if(created) logger.LogInformation($"Interest {e.Name} is saved");
             });
             bus.Subscribe<ErrorEvent>(e =>
             {
