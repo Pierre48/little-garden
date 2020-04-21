@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LittleGarden.core\LittleGarden.Core.csproj" />
-    <ProjectReference Include="..\Pump\Pump.Core\Pump.Core.csproj" />
   </ItemGroup>
 
 </Project>

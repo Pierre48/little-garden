@@ -7,7 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["LittleGarden.API/LittleGarden.API.csproj", "LittleGarden.API/"]
+COPY ["src/LittleGarden.API/LittleGarden.API.csproj", "LittleGarden.API/"]
+COPY ["src/LittleGarden.core/LittleGarden.Core.csproj", "LittleGarden.core/"]
+COPY ["src/LittleGarden.Data/LittleGarden.Data.csproj", "LittleGarden.Data/"]
+COPY ["src/Ppl.Core/Ppl.Core.csproj", "Ppl.Core/"]
 RUN dotnet restore "LittleGarden.API/LittleGarden.API.csproj"
 COPY . .
 WORKDIR "/src/LittleGarden.API"
