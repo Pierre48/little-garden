@@ -10,5 +10,5 @@ jobs:
       with:
         name: pierre48/little-garden
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}*
+        password: ${{ secrets.DOCKER_PASSWORD }}
         dockerfile: src/LittleGarden.API/Dockerfile
