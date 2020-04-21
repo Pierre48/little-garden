@@ -1,23 +1,30 @@
-<p *ngIf="!items"><em>Loading...</em></p>
+<p *ngIf="!seedlings"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="items">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Nom</th>
-            <th>Origine</th>
-            <th>Interet</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let seedling of seedlings">
-            <td><img class="nav-link" src="assets/icons/detail.png" [routerLink]="['/seedlingdetail/',seedling.id]" routerLinkActive="active"></td>
-            <td>{{ seedling.name }}</td>
-            <td>{{ seedling.origine }}</td>
-            <td>{{ seedling.interet }}</td>
-        </tr>
-    </tbody>
-</table>
-<div class="card-footer pb-0 pt-3" *ngIf="items">
-    <jw-pagination [items]="items" [pageSize]="10" [maxPages]="5" (changePage)="onChangePage($event)"></jw-pagination>
+<div class="container" *ngIf="seedlings">
+    <div >
+        <div class="search">
+            <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                placeholder="&#61442; Filtre de recherche">
+        </div>
+
+        <table class='table table-striped' aria-labelledby="tableLabel" >
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nom</th>
+                    <th>Origine</th>
+                    <th>Interet</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let seedling of seedlings | filter:searchText">
+                    <td><img class="nav-link" src="assets/icons/detail.png"
+                            [routerLink]="['/seedlingdetail/',seedling.id]" routerLinkActive="active"></td>
+                    <td>{{ seedling.name }}</td>
+                    <td>{{ seedling.origine }}</td>
+                    <td>{{ seedling.interet }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

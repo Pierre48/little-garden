@@ -10,7 +10,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { SeedlingListComponent } from './seedling-list/seedling-list.component';
 import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.component';
-
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,6 +24,7 @@ import { SeedlingDetailComponent } from './seedling-detail/seedling-detail.compo
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     NgImageSliderModule,
+    Ng2SearchPipeModule,
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: SeedlingListComponent, pathMatch: 'full' },
